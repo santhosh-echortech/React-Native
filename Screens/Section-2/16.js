@@ -1,5 +1,5 @@
 import React from "react"
-import { StyleSheet, View, Text, Button } from "react-native"
+import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native"
 
 function Greeting({ navigation }) {
     return (
@@ -10,10 +10,9 @@ function Greeting({ navigation }) {
                 title='Go To List Screen'
                 onPress={() => navigation.navigate('ListScreen')}
             />
-            <Button
-                title='Go To Reusable Card Screen'
-                onPress={() => navigation.navigate('ReusableCard')}
-            />
+            <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('ReusableCard')}>
+                <Text style={styles.buttonText}>Go To Reusable Card Screen</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -29,8 +28,22 @@ const styles = StyleSheet.create({
         fontSize: 45
     },
     textStyle2: {
-        fontSize: 20
-    }
+        fontSize: 20,
+        marginBottom:'5%'
+    },
+    button: {
+        height: 50,
+        width: '100%',
+        backgroundColor: 'yellow',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '5%'
+    },
+    buttonText: {
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
 })
 
 export default Greeting
