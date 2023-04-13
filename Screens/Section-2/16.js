@@ -13,6 +13,9 @@ function Greeting({ navigation }) {
             <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('ReusableCard')}>
                 <Text style={styles.buttonText}>Go To Reusable Card Screen</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('Counter')}>
+                <Text style={styles.buttonText}>Counter Screen</Text>
+            </TouchableOpacity>
         </View>
     );
 }
