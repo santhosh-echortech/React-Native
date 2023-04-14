@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 
+
+const COLOR_INCREMENT=10
+const COLOR_DECREMENT=10
+
 function ColorScreen() {
     const [red, setRed] = useState(0)
     const [green, setGreen] = useState(0)
@@ -22,9 +26,9 @@ function ColorScreen() {
     console.log(`rgb(${red},${green},${blue})`)
     return (
         <View style={styles.container}>
-            <ColorCounter onIncrease={() => setRed(red + 10)} onDecrease={() => setRed(red - 10)} color='Red' />
-            <ColorCounter onIncrease={() => setGreen(green + 10)} onDecrease={() => setGreen(green - 1)} color='Green ' />
-            <ColorCounter onIncrease={() => setBlue(blue + 10)} onDecrease={() => setBlue(blue - 10)} color='Blue' />
+            <ColorCounter onIncrease={() => setRed(red + COLOR_INCREMENT)} onDecrease={() => setRed(red - COLOR_DECREMENT)} color='Red' />
+            <ColorCounter onIncrease={() => setGreen(green + COLOR_INCREMENT)} onDecrease={() => setGreen(green - COLOR_DECREMENT)} color='Green ' />
+            <ColorCounter onIncrease={() => setBlue(blue + COLOR_INCREMENT)} onDecrease={() => setBlue(blue - COLOR_DECREMENT)} color='Blue' />
             <View style={[styles.colorContainer, { backgroundColor: `rgb(${red},${green},${blue})` }]} />
         </View>
     )
