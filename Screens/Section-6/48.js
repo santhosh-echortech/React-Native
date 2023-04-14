@@ -2,13 +2,38 @@ import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 
 
-const COLOR_INCREMENT=10
-const COLOR_DECREMENT=10
+const COLOR_INCREMENT = 10
+const COLOR_DECREMENT = 10
 
 function ColorScreen() {
     const [red, setRed] = useState(0)
     const [green, setGreen] = useState(0)
     const [blue, setBlue] = useState(0)
+
+    const setColor = (color, change) => {
+
+        switch (color) {
+            case 'Red':
+                red + change > 255 || red + change < 0 ? null : setRed(red + change)
+                break
+            case 'Green':
+                green + change > 255 || green + change < 0 ? null : setGreen(green + change)
+                // if (color == 'Green') {
+                //     if (green + change > 255 || green + change < 0) {
+                //         return
+                //     }
+                //     else {
+                //         setGreen(green + change)
+                //     }
+                // }
+                break
+            case 'Blue':
+                blue + change > 255 || blue + change < 0 ? null : setBlue(blue + change)
+                break
+            default:
+                break
+        }
+    }
 
     const ColorCounter = ({ color, onIncrease, onDecrease }) => {
         return (
@@ -23,12 +48,12 @@ function ColorScreen() {
             </>
         )
     }
-    console.log(`rgb(${red},${green},${blue})`)
+    // console.log(`rgb(${red},${green},${blue})`)
     return (
         <View style={styles.container}>
-            <ColorCounter onIncrease={() => setRed(red + COLOR_INCREMENT)} onDecrease={() => setRed(red - COLOR_DECREMENT)} color='Red' />
-            <ColorCounter onIncrease={() => setGreen(green + COLOR_INCREMENT)} onDecrease={() => setGreen(green - COLOR_DECREMENT)} color='Green ' />
-            <ColorCounter onIncrease={() => setBlue(blue + COLOR_INCREMENT)} onDecrease={() => setBlue(blue - COLOR_DECREMENT)} color='Blue' />
+            <ColorCounter onIncrease={() => setColor('Red', COLOR_INCREMENT)} onDecrease={() => setColor('Red', -1 * COLOR_DECREMENT)} color='Red' />
+            <ColorCounter onIncrease={() => setColor('Green', COLOR_INCREMENT)} onDecrease={() => setColor('Green', -1 * COLOR_DECREMENT)} color='Green ' />
+            <ColorCounter onIncrease={() => setColor('Blue', COLOR_INCREMENT)} onDecrease={() => setColor('Blue', -1 * COLOR_DECREMENT)} color='Blue' />
             <View style={[styles.colorContainer, { backgroundColor: `rgb(${red},${green},${blue})` }]} />
         </View>
     )
