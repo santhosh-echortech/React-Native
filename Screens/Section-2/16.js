@@ -22,6 +22,9 @@ function Greeting({ navigation }) {
             <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('ColorScreen')}>
                 <Text style={styles.buttonText}>Color Screen</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('ReducerScreen')}>
+                <Text style={styles.buttonText}>Reducer  Screen</Text>
+            </TouchableOpacity>
         </View>
     );
 }

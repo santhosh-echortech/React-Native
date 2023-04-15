@@ -7,6 +7,7 @@ import ReusableScreen from './Screens/Section-5/31'
 import Counter from './Screens/Section-6/41'
 import AddColor from './Screens/Section-6/44'
 import ColorScreen from './Screens/Section-6/48'
+import ReducerScreen from './Screens/Section-6/56'
 
 const Stack = createNativeStackNavigator()
 
@@ -25,6 +26,7 @@ const App = () => {
         <Stack.Screen name="Counter" component={Counter} />
         <Stack.Screen name="AddColor" component={AddColor} />
         <Stack.Screen name="ColorScreen" component={ColorScreen} />
+        <Stack.Screen name="ReducerScreen" component={ReducerScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
