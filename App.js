@@ -10,6 +10,7 @@ import ColorScreen from './Screens/Section-6/48'
 import ReducerScreen from './Screens/Section-6/56'
 import ReducerCount from './Screens/Section-6/61'
 import TextScreen from './Screens/Section-6/62'
+import PasswordScreen from './Screens/Section-6/67'
 
 const Stack = createNativeStackNavigator()
 
@@ -31,6 +32,7 @@ const App = () => {
         <Stack.Screen name="ReducerScreen" component={ReducerScreen} />
         <Stack.Screen name="ReducerCount" component={ReducerCount} />
         <Stack.Screen name="TextScreen" component={TextScreen} />
+        <Stack.Screen name="PasswordScreen" component={PasswordScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
