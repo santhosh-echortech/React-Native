@@ -35,6 +35,9 @@ function Greeting({ navigation }) {
                 <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('PasswordScreen')}>
                     <Text style={styles.buttonText}>Password Screen</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('LayoutScreen')}>
+                    <Text style={styles.buttonText}>LayOut  Screen</Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );
