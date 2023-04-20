@@ -62,9 +62,9 @@ const Restaurant = (props) => {
                 />
             </View>
             <View style={styles.flatListContainer}>
-                <RestaurantCard title='Big Spender' data={restauant.filter((item => item?.price == "$"))} />
-                <RestaurantCard title='Cost Effective' data={restauant.filter((item => item?.price == "$$"))} />
-                <RestaurantCard title='Bit Pricer' data={restauant.filter((item => item?.price == "$$$"))} />
+                <RestaurantCard title='Cost Effective' data={restauant.filter((item => item?.price == "$"))} />
+                <RestaurantCard title='Bit Pricer' data={restauant.filter((item => item?.price == "$$"))} />
+                <RestaurantCard title='Big Spender' data={restauant.filter((item => item?.price == "$$$"))} />
             </View>
         </ScrollView>
     )
@@ -115,30 +115,6 @@ const styles = StyleSheet.create({
         paddingRight: '4%',
         fontSize: 18
     },
-    cardImage: {
-        width: '100%',
-        height: 200
-    },
-    cardContainer: {
-        // height: 300,
-        width: 250,
-        backgroundColor: '#0D0D0D',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-
-        elevation: 5,
-        borderRadius: 8,
-        overflow: 'hidden',
-        marginRight: 10,
-        marginTop: '5%',
-        padding: 5
-    },
-
     flatListContainer: {
         width: '90%',
         alignSelf: 'center'
@@ -153,7 +129,7 @@ const styles = StyleSheet.create({
     card: {
         width: 250,
         height: 250,
-        backgroundColor: '#D3D3D3',
+        backgroundColor: 'white',
         borderRadius: 8,
         overflow: 'hidden',
         marginRight: 10
