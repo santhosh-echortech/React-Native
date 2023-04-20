@@ -4,7 +4,7 @@ import DummyData from "./DummyData"
 import Search from '../Assets/Svg/Search.svg'
 import axios from 'axios'
 
-const Home = () => {
+const Home = (props) => {
     const [search, setSearch] = useState('')
     const [newYork, setNewYork] = useState([])
     const [california, setCalifornia] = useState([])
@@ -26,7 +26,7 @@ const Home = () => {
     }
 
     useEffect(() => {
-        const stateName = ['new_york', 'california', 'florida'].map(item => item)
+       // const stateName = ['new_york', 'california', 'florida'].map(item => item)
         axios.get('https://api.openbrewerydb.org/v1/breweries', {
             params: {
                 by_state: 'new_york',
@@ -80,7 +80,7 @@ const Home = () => {
                 // onEndEditing={getBrewery}
                 />
             </View>
-            <Text style={{ marginLeft: '5%', marginTop: '4%' }}>No Search Functionality Yet!</Text>
+            <Text onPress={()=>props.navigation.navigate('restaurant')} style={styles.clickMe}>Click Me!</Text>
             {error ?
                 <Text style={styles.error}>Something Went Wrong!</Text>
                 :
@@ -213,6 +213,13 @@ const styles = StyleSheet.create({
         marginTop: '5%',
         fontSize: 20,
         color: 'black'
+    },
+    clickMe: {
+        marginLeft: '5%',
+        marginTop: '4%',
+        textAlign: 'center',
+        fontSize: 20,
+        color:'black'
     },
 })
 
