@@ -15,10 +15,12 @@ const Home = (props) => {
 
     return (
         <View style={styles.container}>
-            <Button
-                title='Add Blog Posts'
-                onPress={addBlogPosts}
-            />
+            <TouchableOpacity onPress={addBlogPosts} activeOpacity={0.7} style={styles.button}>
+                <Text style={styles.buttonText}>Add Posts</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  activeOpacity={0.7} style={styles.button}>
+                <Text style={styles.buttonText}>Create Posts</Text>
+            </TouchableOpacity>
             <FlatList
                 data={blogList}
                 keyExtractor={(_, index) => String(index)}
@@ -70,6 +72,21 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginRight: '5%',
         color: 'black'
+    },
+    button: {
+        height: 45,
+        width: '50%',
+        alignSelf: 'center',
+        backgroundColor: 'black',
+        marginTop: '2%',
+        marginBottom:'1%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    buttonText:{
+        fontSize:18,
+        color:'white',
+        fontWeight:'bold'
     }
 })
 
