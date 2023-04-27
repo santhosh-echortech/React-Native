@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Provider } from './Context/Context'
 import Home from './Screens/Home'
+import ShowScreen from './Screens/ShowScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -16,6 +17,7 @@ const App = () => {
         }}
       >
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="ShowScreen" component={ShowScreen}  />
       </Stack.Navigator>
     </NavigationContainer>
   )
