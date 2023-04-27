@@ -28,17 +28,13 @@ export const Provider = ({ children }) => {
 
     const [blogList, setBlogList] = useState([])
 
-    const addBlogPosts = () => {
-        setBlogList([...blogList, { id: Math.floor(Math.random() * 9999), title: `My Blog Post ${blogList.length + 1}` }])
-    }
-
     // const addBlogPost=()=>{
     //     dispatch({type:'addBlogPosts'})
     // }
 
     return (
         <Context.Provider value={{
-            blogList, setBlogList, addBlogPosts
+            blogList, setBlogList
             // addBlogPost,blogPosts
         }}>
             {children}
