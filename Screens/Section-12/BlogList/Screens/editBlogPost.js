@@ -1,14 +1,23 @@
 import React, { useContext, useState } from 'react'
 import { View, Text, StyleSheet, StatusBar, TextInput, TouchableOpacity } from 'react-native'
 import Context from '../Context/Context'
+import Server from '../API/axios'
 
 const EditBlogPost = (props) => {
     const { blogList, setBlogList } = useContext(Context)
     const [title, setTitle] = useState(props?.route?.params?.item?.title)
     const [description, setDescription] = useState(props?.route?.params?.item?.description)
-    const handleSave=()=>{
-        setBlogList([{...blogList,title:title,description:description}])
-        props.navigation.navigate('Home')
+    const handleSave = async () => {
+        try {
+            await Server.put(`/blogPosts/${props?.route?.params?.item?.id}`, {
+                title: title,
+                description: description
+            })
+            props.navigation.navigate('Home')
+        } catch (error) {
+            console.log(error, 'Error While Editing Blog Post');
+        }
+        // setBlogList([{...blogList,title:title,description:description}])
     }
 
     return (

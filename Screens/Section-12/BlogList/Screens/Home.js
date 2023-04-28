@@ -1,21 +1,33 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity, StatusBar } from 'react-native'
 import Context from "../Context/Context"
+import Server from '../API/axios'
 
 const Home = (props) => {
     const { blogList, setBlogList } = useContext(Context)
 
-    const handleDelete = (id) => {
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await Server.get('/blogPosts')
+                //console.log(response?.data, 'RESPONSE')
+                setBlogList(response?.data)
+            } catch (error) {
+                console.log(error, '/blogPosts Listing Error')
+            }
+        })()
+    }, [blogList])
 
-        const newBlogPosts = blogList.filter((item) => item.id != id)
-        console.log(newBlogPosts)
-        setBlogList(newBlogPosts)
+    const handleDelete = async (id) => {
+        await Server.delete(`/blogPosts/${id}`)
+        // const newBlogPosts = blogList.filter((item) => item.id != id)
+        // console.log(newBlogPosts)
+        // setBlogList(newBlogPosts)
     }
 
-
-    const addBlogPosts = () => {
-        setBlogList([...blogList, { id: Math.floor(Math.random() * 9999), title: `My Blog Post ${blogList.length + 1}` }])
-    }
+    // const addBlogPosts = () => {
+    //     setBlogList([...blogList, { id: Math.floor(Math.random() * 9999), title: `My Blog Post ${blogList.length + 1}` }])
+    // }
 
 
     return (
@@ -23,19 +35,19 @@ const Home = (props) => {
             <StatusBar backgroundColor={'white'} barStyle={'dark-content'} />
             <View style={styles.container}>
                 <Text style={styles.header}>Blog List</Text>
-                <TouchableOpacity onPress={addBlogPosts} activeOpacity={0.7} style={styles.button}>
+                {/* <TouchableOpacity onPress={addBlogPosts} activeOpacity={0.7} style={styles.button}>
                     <Text style={styles.buttonText}>Add Posts</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => props.navigation.navigate('CreateBlogPost')} activeOpacity={0.7} style={styles.button}>
                     <Text style={styles.buttonText}>Create Posts</Text>
                 </TouchableOpacity>
-                <FlatList
+                {blogList.length > 0 ? <FlatList
                     data={blogList}
                     keyExtractor={(_, index) => String(index)}
                     renderItem={({ item }) => {
                         return (
                             <TouchableOpacity onPress={() => props.navigation.navigate('ShowScreen', { item })} activeOpacity={0.7} style={styles.blogPost}>
-                                <Text style={styles.title}>{item?.title} - {item?.id}</Text>
+                                <Text style={styles.title}>{item?.id}.{item?.title}</Text>
                                 <TouchableOpacity onPress={() => handleDelete(item?.id)} activeOpacity={0.7}>
                                     <Text style={styles.delete}>Delete</Text>
                                 </TouchableOpacity>
@@ -43,6 +55,9 @@ const Home = (props) => {
                         )
                     }}
                 />
+                    :
+                    <Text style={styles.noData}>No BlogLists</Text>
+                }
             </View>
         </>
     )
@@ -83,12 +98,14 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         marginLeft: '5%',
-        color: 'black'
+        color: 'black',
+        fontWeight: 'bold'
     },
     delete: {
         fontSize: 16,
         marginRight: '5%',
-        color: 'black'
+        color: 'black',
+        fontWeight: 'bold'
     },
     button: {
         height: 45,
@@ -96,7 +113,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: 'black',
         marginTop: '2%',
-        marginBottom: '1%',
+        marginBottom: '5%',
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -104,6 +121,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'white',
         fontWeight: 'bold'
+    },
+    noData: {
+        fontSize: 20,
+        color: 'black',
+        textAlign: 'center',
+        marginTop: '10%'
     }
 })
 
