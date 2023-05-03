@@ -22,7 +22,7 @@ mongoose.connect('mongodb+srv://SanthoshKumar:xowUHOxUswyP23PE@track-app.ibwkxqf
 })
 
 app.get('/', Auth, (req, res) => {
-    res.send(`Email ${req.body.email}`)
+    res.send(`Email ${req}`)
 })
 
 

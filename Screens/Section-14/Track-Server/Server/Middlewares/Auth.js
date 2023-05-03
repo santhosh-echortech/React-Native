@@ -9,10 +9,10 @@ module.exports = (req, res, next) => {
         return res.status(401).send({ error: 'You Must Be Logged In' })
     }
 
-    const token = authorization.replace('Bearer', ' ')
+    const token = authorization.replace('Bearer ', '')
     jwt.verify(token, 'mySecretKey', async (error, payload) => {
         if (error) {
-            return res.status(401).send({ error:'Error While Verifying JWT' })
+            return res.status(401).send({ error})
         }
         const { userId } = payload
 
