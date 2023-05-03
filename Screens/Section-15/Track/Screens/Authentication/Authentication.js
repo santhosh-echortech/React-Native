@@ -9,7 +9,7 @@ const Authentication = () => {
     })
     return (
         <>
-            <StatusBar backgroundColor={'white'} />
+            <StatusBar backgroundColor={'white'} barStyle={'dark-content'}/>
             <View style={styles.container}>
                 <Text style={styles.pageTitle}>{!signedIn ? 'Sign Up' : 'Sign In'}</Text>
                 <TextInput
