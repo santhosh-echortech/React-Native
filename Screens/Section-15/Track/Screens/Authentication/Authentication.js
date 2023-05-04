@@ -1,33 +1,67 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, StatusBar, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, StatusBar, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
+import axios from '../../Api/axios'
 
-const Authentication = () => {
+const Authentication = (props) => {
     const [signedIn, setSignedIn] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [userDetails, setUserDetails] = useState({
         email: '',
         password: ''
     })
+    const handleAuth = async () => {
+        setLoading(true)
+        if (signedIn) {
+            try {
+
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            try {
+                if (!userDetails.email || !userDetails.password) {
+                    setLoading(false)
+                    return
+                }
+               
+                const response = await axios.post('/signup', {
+                    email: userDetails.email,
+                    password: userDetails.password
+                })
+                console.log(response?.data)
+            } catch (error) {
+                console.log(error?.response?.data, 'SIGN UP ERROR')
+            }
+        }
+        setLoading(false)
+    }
+
     return (
         <>
-            <StatusBar backgroundColor={'white'} barStyle={'dark-content'}/>
+            <StatusBar backgroundColor={'white'} barStyle={'dark-content'} />
             <View style={styles.container}>
                 <Text style={styles.pageTitle}>{!signedIn ? 'Sign Up' : 'Sign In'}</Text>
                 <TextInput
+                    autoCapitalize='none'
+                    autoCorrect={false}
                     style={styles.input}
                     placeholder='Email'
                     value={userDetails.email}
                     onChangeText={(text) => setUserDetails({ ...userDetails, email: text })}
                 />
                 <TextInput
+                    secureTextEntry
+                    autoCapitalize='none'
+                    autoCorrect={false}
                     style={styles.input}
                     placeholder='Password'
                     value={userDetails.password}
                     onChangeText={(text) => setUserDetails({ ...userDetails, password: text })}
                 />
-                <TouchableOpacity activeOpacity={0.7} style={styles.button}>
-                    <Text style={styles.buttonText}>{!signedIn ? 'Sign Up' : 'Sign In'}</Text>
+                <TouchableOpacity onPress={() =>  handleAuth()} activeOpacity={0.7} style={styles.button}>
+                    {loading ? <ActivityIndicator size="large" color='white' /> : <Text style={styles.buttonText}>{!signedIn ? 'Sign Up' : 'Sign In'}</Text>}
                 </TouchableOpacity>
-                <Text onPress={()=>setSignedIn(true)} style={styles.note}>{!signedIn ? 'Already Have An Account? Sign In Instead' : 'Dont Have An Account: Sign Up'}</Text>
+                <Text onPress={() => setSignedIn(!signedIn)} style={styles.note}>{!signedIn ? 'Already Have An Account? Sign In Instead' : 'Dont Have An Account: Sign Up'}</Text>
             </View>
         </>
     )

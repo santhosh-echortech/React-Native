@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 // import { Provider } from './Context/Context'
 import Authentication from './Screens/Authentication/Authentication'
+import { Provider } from './Context/Context'
 
 const Stack = createNativeStackNavigator()
 
@@ -23,8 +24,8 @@ const App = () => {
 
 export default () => {
   return (
-    // <Provider>
+    <Provider>
       <App />
-    // </Provider>
+    </Provider>
   )
 }
