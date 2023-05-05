@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { View, StyleSheet, StatusBar, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import axios from '../../Api/axios'
+import { ToastMessage } from '../../Utils'
+import { Context } from '../../Context/Context'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Authentication = (props) => {
+    const { isSignedIn, setIsSignedIn } = useContext(Context)
     const [signedIn, setSignedIn] = useState(false)
     const [loading, setLoading] = useState(false)
     const [userDetails, setUserDetails] = useState({
@@ -13,9 +17,18 @@ const Authentication = (props) => {
         setLoading(true)
         if (signedIn) {
             try {
-
+                const response = await axios.post('/signin', {
+                    email: userDetails.email,
+                    password: userDetails.password
+                })
+                await AsyncStorage.setItem('token', response?.data?.token)
+                console.log(response?.data, 'SIGN IN')
+                ToastMessage('Signed In Successfully')
+                props.navigation.navigate('Footer')
             } catch (error) {
-                console.log(error)
+                console.log(error?.response?.data, 'SIGN IN ERROR')
+                ToastMessage(error?.response?.data?.message)
+                setSignedIn(!signedIn)
             }
         } else {
             try {
@@ -23,14 +36,18 @@ const Authentication = (props) => {
                     setLoading(false)
                     return
                 }
-               
                 const response = await axios.post('/signup', {
                     email: userDetails.email,
                     password: userDetails.password
                 })
-                console.log(response?.data)
+                await AsyncStorage.setItem('token', response?.data?.token)
+                console.log(response?.data, 'SIGN UP')
+                ToastMessage('Signed Up Successfully')
+                props.navigation.navigate('Footer')
             } catch (error) {
                 console.log(error?.response?.data, 'SIGN UP ERROR')
+                ToastMessage(error?.response?.data?.message)
+                setSignedIn(!signedIn)
             }
         }
         setLoading(false)
@@ -58,7 +75,7 @@ const Authentication = (props) => {
                     value={userDetails.password}
                     onChangeText={(text) => setUserDetails({ ...userDetails, password: text })}
                 />
-                <TouchableOpacity onPress={() =>  handleAuth()} activeOpacity={0.7} style={styles.button}>
+                <TouchableOpacity onPress={() => handleAuth()} activeOpacity={0.7} style={styles.button}>
                     {loading ? <ActivityIndicator size="large" color='white' /> : <Text style={styles.buttonText}>{!signedIn ? 'Sign Up' : 'Sign In'}</Text>}
                 </TouchableOpacity>
                 <Text onPress={() => setSignedIn(!signedIn)} style={styles.note}>{!signedIn ? 'Already Have An Account? Sign In Instead' : 'Dont Have An Account: Sign Up'}</Text>
