@@ -3,10 +3,10 @@ import React, { createContext, useState } from "react"
 export const Context = createContext()
 
 export const Provider = props => {
-    const [isSignedIn, setIsSignedIn] = useState(false)
+    const [userData, setUserData] = useState(null)
     return (
         <Context.Provider value={{
-            isSignedIn, setIsSignedIn
+            userData, setUserData
         }}>
             {props.children}
         </Context.Provider>

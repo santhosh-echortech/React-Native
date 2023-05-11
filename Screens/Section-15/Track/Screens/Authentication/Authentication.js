@@ -6,7 +6,7 @@ import { Context } from '../../Context/Context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Authentication = (props) => {
-    const { isSignedIn, setIsSignedIn } = useContext(Context)
+    const { userData, setUserData } = useContext(Context)
     const [signedIn, setSignedIn] = useState(false)
     const [loading, setLoading] = useState(false)
     const [userDetails, setUserDetails] = useState({
@@ -21,6 +21,7 @@ const Authentication = (props) => {
                     email: userDetails.email,
                     password: userDetails.password
                 })
+                setUserData(response?.data)
                 await AsyncStorage.setItem('token', response?.data?.token)
                 console.log(response?.data, 'SIGN IN')
                 ToastMessage('Signed In Successfully')
@@ -40,6 +41,7 @@ const Authentication = (props) => {
                     email: userDetails.email,
                     password: userDetails.password
                 })
+                setUserData(response?.data)
                 await AsyncStorage.setItem('token', response?.data?.token)
                 console.log(response?.data, 'SIGN UP')
                 ToastMessage('Signed Up Successfully')

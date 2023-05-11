@@ -5,6 +5,7 @@ import Authentication from './Screens/Authentication/Authentication'
 import { Provider } from './Context/Context'
 import { RootSiblingParent } from 'react-native-root-siblings'
 import Footer from './Screens/Footer/Footer'
+import SplashScreen from './Screens/SplashScreen/SplashScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -12,11 +13,12 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName='Authentication'
+        initialRouteName='SplashScreen'
         screenOptions={{
           headerShown: false
         }}
       >
+        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="Authentication" component={Authentication} options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="Footer" component={Footer} options={{ animation: 'slide_from_right' }} />
       </Stack.Navigator>
