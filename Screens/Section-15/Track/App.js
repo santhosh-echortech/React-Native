@@ -6,6 +6,9 @@ import { Provider } from './Context/Context'
 import { RootSiblingParent } from 'react-native-root-siblings'
 import Footer from './Screens/Footer/Footer'
 import SplashScreen from './Screens/SplashScreen/SplashScreen'
+import {enableLatestRenderer} from 'react-native-maps'
+
+enableLatestRenderer()
 
 const Stack = createNativeStackNavigator()
 
