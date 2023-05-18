@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image, Touchable, TouchableOpacity } from 'react-native'
 
-const Card = ({ moviePoster, artistPhoto, movieName, singerName, musicDirectorPhoto }) => {
+const Card = ({ moviePoster, artistPhoto, movieName, singerName, musicDirectorPhoto, handlePress }) => {
     return (
         <View style={styles.card}>
             <View style={styles.cardHeader}>
@@ -12,7 +12,7 @@ const Card = ({ moviePoster, artistPhoto, movieName, singerName, musicDirectorPh
                 </View>
             </View>
             <Image source={{ uri: moviePoster }} style={styles.moviePoster} />
-            <TouchableOpacity activeOpacity={0.7} style={styles.button}>
+            <TouchableOpacity onPress={handlePress} activeOpacity={0.7} style={styles.button}>
                 <Text style={styles.buttonText}>Buy Now</Text>
             </TouchableOpacity>
         </View>
@@ -47,15 +47,15 @@ const styles = StyleSheet.create({
     button: {
         height: 40,
         backgroundColor: 'black',
-        width:100,
-        alignItems:'center',
+        width: 100,
+        alignItems: 'center',
         justifyContent: 'center',
-        color:'white',
-        marginTop:'5%',
-        alignSelf:'flex-end'
+        color: 'white',
+        marginTop: '5%',
+        alignSelf: 'flex-end'
     },
     buttonText: {
-        color:'white'
+        color: 'white'
     },
 })
 

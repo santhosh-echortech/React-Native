@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, StatusBar, FlatList } from 'react-native'
+import { View, StyleSheet, StatusBar, FlatList ,Linking} from 'react-native'
 import Card from '../Components/Card'
 import Header from '../Components/Header'
 
@@ -21,6 +21,13 @@ const Home = () => {
         setAlbums(DATA)
     }, [])
 
+    const openSpotifyInBrowser = () => {
+        const spotifyUrl = 'https://open.spotify.com/'
+
+        Linking.openURL(spotifyUrl)
+            .catch((err) => console.error('An error occurred', err))
+    }
+
     return (
         <>
             <StatusBar backgroundColor={'white'} barStyle={'dark-content'} />
@@ -38,6 +45,7 @@ const Home = () => {
                                 movieName={item.movieName}
                                 singerName={item.singerName}
                                 musicDirectorPhoto={item.musicDirectorPhoto}
+                                handlePress={openSpotifyInBrowser}
                             />
                         )
                     }}
@@ -50,7 +58,7 @@ const Home = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: 'lightgrey'
     },
 })
 
