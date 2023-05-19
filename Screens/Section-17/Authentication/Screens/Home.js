@@ -53,9 +53,11 @@ const Home = () => {
             .then(() => {
                 setUser(null)
                 setErrorMessage(null)
+                setUserDetails({})
             })
             .catch((error) => {
                 setErrorMessage(error.message)
+                setUserDetails({})
             })
     }
 
@@ -89,6 +91,7 @@ const Home = () => {
                             placeholder='Password'
                             autoCapitalize='none'
                             autoCorrect={false}
+                            secureTextEntry
                             style={styles.input}
                             value={userDetails.password}
                             onChangeText={(text) => setUserDetails({ ...userDetails, password: text })}
