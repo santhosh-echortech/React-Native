@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "502780289803",
+    "project_id": "manager-d40f5",
+    "storage_bucket": "manager-d40f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502780289803:android:5a476806c75124944bf80e",
+        "android_client_info": {
+          "package_name": "com.manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_nlW7dHe-uRIh1ZBDN4I331s4Ev_7LQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
