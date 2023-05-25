@@ -1,12 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { TouchableOpacity, Text, StyleSheet } from "react-native"
 import { connect } from 'react-redux'
 import * as actions from 'react-redux'
 import { SelectLibrary } from '../Actions'
 
-const ListItem = ({item}) => {
+const ListItem = ({ item }) => {
+
+    const renderDescription = (item) => {
+        return (
+            <Text>{item?.description}</Text>
+        )
+    }
     return (
-        <TouchableOpacity onPress={() => SelectLibrary(item?.id)} activeOpacity={0.7} style={styles.row}>
+        <TouchableOpacity onPress={() => {
+            renderDescription(item)
+        }} activeOpacity={0.7} style={styles.row}>
             <Text style={styles.title}>{item?.title}</Text>
         </TouchableOpacity>
     )
