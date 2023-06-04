@@ -1,19 +1,49 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TextInput, ActivityIndicator, StyleSheet, Modal, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, ActivityIndicator, StyleSheet, Modal, PermissionsAndroid, Platform, TouchableOpacity, Pressable } from 'react-native'
 import messaging from '@react-native-firebase/messaging'
+import database from '@react-native-firebase/database'
 
-const FIREBASE_SERVER_KEY = 'BPOIV4YbLu4wtZYh682mxk77r7GIGFDXesbxk4hx8BeSYLrP8Zg01-J10LrpFmf6Vin8xcqq3sD0D3UAgJVlTvo'
+const FIREBASE_SERVER_KEY = 'BLZwV1F084zm2pZsTSH2OuMS-aM7OskAC3LhUmP28sdZM-l6ygZIeWYWz1lHdZcQ_bln7s2oC2WcY_g0AM_GgvQ'
+// const FIREBASE_SERVER_KEY = 'AAAA8RTm3jI:APA91bENtp7s8Ckv-7fEdDfEcBi8Az6dn5vI5dOZDGmnop8fVpm6WGaDBJMQ3BYnVXXsRgssFtM0-hOd6c72YI5Fftl7Kz9wce8E8Z4EN6cJsI40RaUDtkZ7vFoPmP-aGWsmytcfY53F'
 
 const Employee = () => {
     const [employees, setEmployees] = useState([])
+    const [loading, setLoading] = useState(true)
     const [name, setName] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [shiftDay, setShiftDay] = useState('')
     const [isModalVisible, setModalVisible] = useState(false)
     const [fireModalVisible, setFireModalVisible] = useState(false)
+    const [editModalVisible, setEditModalVisible] = useState(false)
     const [selectedEmployee, setSelectedEmployee] = useState(null)
     const [Index, setIndex] = useState()
     const [token, setToken] = useState('')
+    const [empId, setEmpId] = useState('')
+    const [editedEmployee, setEditedEmployee] = useState({
+        name: '',
+        phoneNumber: '',
+        shiftDay: '',
+    })
+
+
+
+    useEffect(() => {
+        const employeesRef = database().ref('employees')
+
+        const handleDataChange = (snapshot) => {
+            const employeeData = snapshot.val()
+            const employeeList = employeeData ? Object.values(employeeData) : []
+            setEmployees(employeeList)
+            setLoading(false)
+        }
+
+        employeesRef.on('value', handleDataChange)
+
+        return () => {
+            employeesRef.off('value', handleDataChange)
+        }
+    }, [])
+
 
 
     useEffect(() => {
@@ -56,12 +86,12 @@ const Employee = () => {
                 body: 'data_body',
                 extra: 'data_extra',
             },
-        };
+        }
 
         let headers = new Headers({
             'Content-Type': 'application/json',
             Authorization: 'key=' + FIREBASE_SERVER_KEY,
-        });
+        })
 
         let response = await fetch('https://fcm.googleapis.com/fcm/send', {
             method: 'POST',
@@ -70,7 +100,7 @@ const Employee = () => {
         })
         response = await response.json()
         setToken('')
-        console.log(response,'RES')
+        console.log(response, 'RES')
     }
 
 
@@ -80,21 +110,87 @@ const Employee = () => {
             phoneNumber,
             shiftDay
         }
-        setEmployees([...employees, employee])
+        /*setEmployees([...employees, employee])
         setName('')
         setPhoneNumber('')
         setShiftDay('')
-        setModalVisible(false)
+        setModalVisible(false)*/
+        // Push the employee data to the database
+        database()
+            .ref('employees')
+            .push(employee)
+            .then(() => {
+                setName('')
+                setPhoneNumber('')
+                setShiftDay('')
+                setModalVisible(false)
+            })
+            .catch((error) => {
+                console.log('Error adding employee:', error)
+            })
     }
 
+
     const handleRemoveEmployee = (index) => {
+        const updatedEmployees = [...employees]
+        updatedEmployees.splice(index, 1)
+        setEmployees(updatedEmployees)
+
+        const employeeRef = database().ref('employees')
+        employeeRef
+            .orderByChild('index')
+            .equalTo(index)
+            .once('value', (snapshot) => {
+                snapshot.forEach((childSnapshot) => {
+                    const childKey = childSnapshot.key
+                    employeeRef.child(childKey).remove()
+                })
+            })
+            .then(() => {
+                console.log('Employee removed successfully')
+            })
+            .catch((error) => {
+                console.log('Error removing employee:', error)
+            })
+        setFireModalVisible(false)
+    }
+
+
+
+    /* const handleRemoveEmployee = (index) => {
+         const updatedEmployees = [...employees]
+         updatedEmployees.splice(index, 1)
+         setEmployees(updatedEmployees)
+ 
+         // Remove the employee from the database
+         const employeeRef = database().ref('employees')
+         employeeRef
+             .orderByChild('index')
+             .equalTo(index)
+             .once('value', (snapshot) => {
+                 snapshot.forEach((childSnapshot) => {
+                     const childKey = childSnapshot.key
+                     employeeRef.child(childKey).remove()
+                 })
+             })
+             .then(() => {
+                 console.log('Employee removed successfully')
+             })
+             .catch((error) => {
+                 console.log('Error removing employee:', error)
+             })
+         setFireModalVisible(false)
+     }
+ */
+
+    /*const handleRemoveEmployee = (index) => {
         const updatedEmployees = [...employees]
         updatedEmployees.splice(index, 1)
         setEmployees(updatedEmployees)
         setFireModalVisible(false)
     }
 
-    /* const handleSendMessage = (phoneNumber) => {
+    const handleSendMessage = (phoneNumber) => {
  
          messaging()
              .sendMessage({
@@ -109,6 +205,38 @@ const Employee = () => {
                  console.log('Error sending message:', error)
              })
      }*/
+
+    const handleSaveChanges = () => {
+        const updatedEmployees = employees.map((employee) => {
+            if (employee.name === editedEmployee.name) {
+                return { ...editedEmployee }
+            }
+            return employee
+        })
+        const employeeRef = database().ref('employees')
+        employeeRef
+            .set(updatedEmployees)
+            .then(() => {
+                console.log('Employee details updated in Firebase')
+            })
+            .catch((error) => {
+                console.log('Error updating employee details:', error)
+            })
+        setEmployees(updatedEmployees)
+        setEditModalVisible(false)
+    }
+
+    const handleEditEmployee = (employee) => {
+        setEditedEmployee({
+            name: employee.name,
+            phoneNumber: employee.phoneNumber,
+            shiftDay: employee.shiftDay,
+        })
+        setEditModalVisible(true)
+    }
+
+
+
 
     return (
         <View style={styles.container}>
@@ -174,30 +302,90 @@ const Employee = () => {
                     </View>
                 </View>
             </Modal>
-            <TouchableOpacity onPress={() => setModalVisible(true)} activeOpacity={0.7} style={styles.button}>
-                <Text style={styles.buttonText}>Add Employee</Text>
-            </TouchableOpacity>
-            <View style={styles.employeeList}>
-                {employees.map((employee, index) => (
-                    <View style={styles.employeeItem} key={index}>
-                        <Text style={styles.employeeText}>Name: {employee.name}</Text>
-                        <Text style={styles.employeeText}>Phone Number: {employee.phoneNumber}</Text>
-                        <Text style={styles.employeeText}>Shift Day: {employee.shiftDay}</Text>
-                        <View style={styles.smallButtonContainer}>
-                            <TouchableOpacity onPress={() => {
-                                setSelectedEmployee(employee.name)
-                                setIndex(index)
-                                setFireModalVisible(true)
-                            }} activeOpacity={0.7} style={styles.smallButton}>
-                                <Text style={styles.buttonText}>Fire</Text>
+            <Modal
+                visible={editModalVisible}
+                animationType="slide"
+                onRequestClose={() => setEditModalVisible(false)}
+                transparent={true}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modal}>
+                        <Text style={styles.label}>Employee Name:</Text>
+                        <TextInput
+                            value={editedEmployee.name}
+                            onChangeText={(value) =>
+                                setEditedEmployee({ ...editedEmployee, name: value })
+                            }
+                            style={styles.input}
+                            placeholder="Enter name"
+                        />
+
+                        <Text style={styles.label}>Phone Number:</Text>
+                        <TextInput
+                            value={editedEmployee.phoneNumber}
+                            onChangeText={(value) =>
+                                setEditedEmployee({ ...editedEmployee, phoneNumber: value })
+                            }
+                            style={styles.input}
+                            placeholder="Enter phone number"
+                        />
+
+                        <Text style={styles.label}>Shift Day:</Text>
+                        <TextInput
+                            value={editedEmployee.shiftDay}
+                            onChangeText={(value) =>
+                                setEditedEmployee({ ...editedEmployee, shiftDay: value })
+                            }
+                            style={styles.input}
+                            placeholder="Enter shift day"
+                        />
+
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                                onPress={handleSaveChanges}
+                                activeOpacity={0.7}
+                                style={styles.button}
+                            >
+                                <Text style={styles.buttonText}>Save Changes</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => sendMessage(token)} activeOpacity={0.7} style={styles.smallButton}>
-                                <Text style={styles.buttonText}>Message</Text>
+                            <TouchableOpacity
+                                onPress={() => setEditModalVisible(false)}
+                                activeOpacity={0.7}
+                                style={styles.button}
+                            >
+                                <Text style={styles.buttonText}>Cancel</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
-                ))}
-            </View>
+                </View>
+            </Modal>
+            <TouchableOpacity onPress={() => setModalVisible(true)} activeOpacity={0.7} style={styles.button}>
+                <Text style={styles.buttonText}>Add Employee</Text>
+            </TouchableOpacity>
+            {loading ? (
+                <ActivityIndicator size="large" color="black" />
+            ) : (
+                <View style={styles.employeeList}>
+                    {employees.map((employee, index) => (
+                        <Pressable onPress={() => handleEditEmployee(employee)} style={styles.employeeItem} key={index}>
+                            <Text style={styles.employeeText}>Name: {employee.name}</Text>
+                            <Text style={styles.employeeText}>Phone Number: {employee.phoneNumber}</Text>
+                            <Text style={styles.employeeText}>Shift Day: {employee.shiftDay}</Text>
+                            <View style={styles.smallButtonContainer}>
+                                <TouchableOpacity onPress={() => {
+                                    setSelectedEmployee(employee.name)
+                                    setIndex(index)
+                                    setFireModalVisible(true)
+                                }} activeOpacity={0.7} style={styles.smallButton}>
+                                    <Text style={styles.buttonText}>Fire</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => sendMessage(token)} activeOpacity={0.7} style={styles.smallButton}>
+                                    <Text style={styles.buttonText}>Message</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Pressable>
+                    ))}
+                </View>)}
         </View>
     )
 }

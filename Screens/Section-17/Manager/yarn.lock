@@ -1566,6 +1566,11 @@
   dependencies:
     plist "^3.0.5"
 
+"@react-native-firebase/database@^17.5.0":
+  version "17.5.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/database/-/database-17.5.0.tgz"
+  integrity sha512-THtlYXt6o+YgRR+kphRkuZgG3uoE/TiIpTzEUatGGcp/XYGeZbr77dE/6jbATQz/ORFrE7lsEpJRJm/c4iuQ6g==
+
 "@react-native-firebase/messaging@^17.5.0":
   version "17.5.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-17.5.0.tgz"
