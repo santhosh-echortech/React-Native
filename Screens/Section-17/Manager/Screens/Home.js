@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { View, StyleSheet, StatusBar, TextInput, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Header from '../Components/Header'
 import auth from '@react-native-firebase/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Home = (props) => {
     const [userDetails, setUserDetails] = useState({
@@ -13,22 +14,46 @@ const Home = (props) => {
     const [signInLoader, setSignInLoader] = useState(false)
     const [logOutLoader, setLogOutLoader] = useState(false)
     const [loader, setLoader] = useState(false)
-    console.log(user)
+
+    useEffect(() => {
+        checkUserToken()
+    }, [])
+
+    const checkUserToken = async () => {
+        try {
+            const token = await AsyncStorage.getItem('userToken')
+            if (token) {
+                props.navigation.navigate('Employee')
+            }
+        } catch (error) {
+            console.log('Error retrieving user token:', error)
+        }
+    }
 
     const handleSignUp = () => {
         setLoader(true)
         auth()
             .createUserWithEmailAndPassword(userDetails.email.trim(), userDetails.password.trim())
-            .then((userCredential) => {
+            .then(async (userCredential) => {
+                console.log(userCredential.user.uid, 'UId')
                 const user = userCredential.user
                 setUser(user)
-                props.navigation.navigate('Employee')
+                try {
+                    const token = await user.getIdToken()
+                    await AsyncStorage.setItem('userToken', token)
+                    console.log('User token stored successfully:', token)
+                } catch (error) {
+                    console.log('Error storing user token:', error)
+                }
+
             })
             .catch((error) => {
                 setErrorMessage(error.message)
                 setUserDetails({})
                 console.log('signUp Error', error.message)
             })
+
+        props.navigation.navigate('Employee')
         setLoader(false)
     }
 
@@ -36,16 +61,24 @@ const Home = (props) => {
         setSignInLoader(true)
         auth()
             .signInWithEmailAndPassword(userDetails.email.trim(), userDetails.password.trim())
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                 const user = userCredential.user
                 setUser(user)
-                props.navigation.navigate('Employee')
+                try {
+                    const token = await user.getIdToken()
+                    await AsyncStorage.setItem('userToken', token)
+                    console.log('User token stored successfully:', token)
+                } catch (error) {
+                    console.log('Error storing user token:', error)
+                }
+
             })
             .catch((error) => {
                 setErrorMessage(error.message)
                 setUserDetails({})
                 console.log('signIn Error', error.message)
             })
+        props.navigation.navigate('Employee')
         setSignInLoader(false)
     }
 
