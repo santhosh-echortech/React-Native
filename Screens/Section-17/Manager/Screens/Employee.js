@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, ActivityIndicator, StyleSheet, Modal, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, TextInput, ActivityIndicator, StyleSheet, Modal, PermissionsAndroid, Platform, TouchableOpacity } from 'react-native'
 import messaging from '@react-native-firebase/messaging'
+
+const FIREBASE_SERVER_KEY = 'BPOIV4YbLu4wtZYh682mxk77r7GIGFDXesbxk4hx8BeSYLrP8Zg01-J10LrpFmf6Vin8xcqq3sD0D3UAgJVlTvo'
 
 const Employee = () => {
     const [employees, setEmployees] = useState([])
@@ -11,6 +13,66 @@ const Employee = () => {
     const [fireModalVisible, setFireModalVisible] = useState(false)
     const [selectedEmployee, setSelectedEmployee] = useState(null)
     const [Index, setIndex] = useState()
+    const [token, setToken] = useState('')
+
+
+    useEffect(() => {
+        const setUpCloudMessaging = async () => {
+            requestUserPermission()
+            const token = await messaging().getToken()
+            setToken(token)
+            console.log('token is ' + token)
+        }
+        setUpCloudMessaging()
+    }, [])
+
+    async function requestUserPermission() {
+        const authorizationStatus = await messaging().requestPermission()
+
+        if (authorizationStatus) {
+            console.log('Permission status:', authorizationStatus)
+        }
+    }
+
+    async function sendMessage(token) {
+        const message = {
+            registration_ids: [token],
+            notification: {
+                title: 'Hello',
+                body:
+                    Platform.OS == 'ios'
+                        ? 'Send a message from iOS'
+                        : 'Send a message from Android',
+                vibrate: 1,
+                sound: 1,
+                image:
+                    'https://yt3.googleusercontent.com/ytc/AL5GRJVhQ4VfaYk7tLNMPDyNkgjTqWKnOXhA-NQZ1FFDUA=s176-c-k-c0x00ffffff-no-rj',
+                priority: 'high',
+                show_in_foreground: true,
+                content_available: true,
+            },
+            data: {
+                title: 'data_title',
+                body: 'data_body',
+                extra: 'data_extra',
+            },
+        };
+
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+            Authorization: 'key=' + FIREBASE_SERVER_KEY,
+        });
+
+        let response = await fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(message),
+        })
+        response = await response.json()
+        setToken('')
+        console.log(response,'RES')
+    }
+
 
     const handleAddEmployee = () => {
         const employee = {
@@ -32,21 +94,21 @@ const Employee = () => {
         setFireModalVisible(false)
     }
 
-    const handleSendMessage = (phoneNumber) => {
-
-        messaging()
-            .sendMessage({
-                data: {
-                    phoneNumber: phoneNumber
-                },
-            })
-            .then(() => {
-                console.log('Message sent successfully.')
-            })
-            .catch((error) => {
-                console.log('Error sending message:', error)
-            })
-    }
+    /* const handleSendMessage = (phoneNumber) => {
+ 
+         messaging()
+             .sendMessage({
+                 data: {
+                     phoneNumber: phoneNumber
+                 },
+             })
+             .then(() => {
+                 console.log('Message sent successfully.')
+             })
+             .catch((error) => {
+                 console.log('Error sending message:', error)
+             })
+     }*/
 
     return (
         <View style={styles.container}>
@@ -129,7 +191,7 @@ const Employee = () => {
                             }} activeOpacity={0.7} style={styles.smallButton}>
                                 <Text style={styles.buttonText}>Fire</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleSendMessage(employee.phoneNumber)} activeOpacity={0.7} style={styles.smallButton}>
+                            <TouchableOpacity onPress={() => sendMessage(token)} activeOpacity={0.7} style={styles.smallButton}>
                                 <Text style={styles.buttonText}>Message</Text>
                             </TouchableOpacity>
                         </View>
